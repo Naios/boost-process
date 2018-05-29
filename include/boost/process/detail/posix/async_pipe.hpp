@@ -109,9 +109,9 @@ public:
     void async_close()
     {
         if (_sink.is_open())
-            _sink.get_io_context().  post([this]{_sink.close();});
+            _sink.get_executor().  post([this]{_sink.close();});
         if (_source.is_open())
-            _source.get_io_context().post([this]{_source.close();});
+            _source.get_executor().post([this]{_source.close();});
     }
 
     template<typename MutableBufferSequence>
@@ -218,8 +218,8 @@ async_pipe::async_pipe(boost::asio::io_context & ios_source,
 }
 
 async_pipe::async_pipe(const async_pipe & p) :
-        _source(const_cast<async_pipe&>(p)._source.get_io_context()),
-        _sink(  const_cast<async_pipe&>(p)._sink.get_io_context())
+        _source(const_cast<async_pipe&>(p)._source.get_executor()),
+        _sink(  const_cast<async_pipe&>(p)._sink.get_executor())
 {
 
     //cannot get the handle from a const object.
